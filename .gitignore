@@ -1,0 +1,130 @@
+# ============================================
+# ARCHIVOS Y CARPETAS A IGNORAR EN GIT
+# ============================================
+
+# Documentación (no esencial para el proyecto)
+docs/
+
+# Python Cache y Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.eggs/
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Streamlit
+.streamlit/
+
+# IDEs y Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.spyderproject
+.spyproject
+*.sublime-workspace
+*.sublime-project
+
+# Sistema Operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Archivos de datos locales
+data/*.db
+data/*.sqlite
+data/*.xlsx
+data/*.csv
+data/*.xls
+data/*.json
+
+# Templates subidos (mantener vacía)
+templates/*
+!templates/.gitkeep
+
+# Logs y temporales
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# Distribución / Packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Archivos de respaldo
+*.bak
+*.backup
+*~
+
+# Archivos generados por el sistema
+horario*.xlsx
+horario*.csv
