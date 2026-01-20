@@ -1,19 +1,26 @@
-# Optimizador de Horarios Académicos UCE
+# Horarios UCE - Sistema de Optimizacion
 
-Sistema de optimización de horarios académicos para la Universidad Central del Ecuador (Facultad de Ingeniería y Ciencias Aplicadas), usando Google OR-Tools CP-SAT Solver y Streamlit.
+Sistema de gestion y optimizacion de horarios academicos para la Universidad Central del Ecuador.
 
-## 🚀 Inicio Rápido
+## Caracteristicas
 
-### Requisitos
+- **Generacion optimizada** de horarios usando OR-Tools
+- **Roles diferenciados**: Admin, Profesor, Estudiante
+- **Soporte PDF/Excel** para carga de datos
+- **Dashboard** con estadisticas y graficas
+- **Publicacion** de horarios oficiales
 
-- Python 3.11+
-- Java (para lectura de PDFs con tabula-py)
-
-### Instalación
+## Instalacion Local
 
 ```bash
-# Clonar o descargar el proyecto
-cd horario_optimizer
+# Clonar repositorio
+git clone https://github.com/tu-usuario/horarios-uce.git
+cd horarios-uce
+
+# Crear entorno virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
 
 # Instalar dependencias
 pip install -r requirements.txt
@@ -22,94 +29,74 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Acceder en: http://localhost:8501
-
-### Credenciales de Prueba
-
-| Rol         | Contraseña      | Descripción                        |
-| ----------- | --------------- | ---------------------------------- |
-| Profesional | `admin123`      | Generación de horarios oficiales   |
-| Estudiante  | `estudiante123` | Optimización personal (futuro)     |
-| Admin       | `superadmin123` | Configuración del sistema (futuro) |
-
-## 📁 Estructura del Proyecto
-
-```
-horario_optimizer/
-├── app.py                 # Dashboard principal con autenticación
-├── requirements.txt       # Dependencias Python
-├── Dockerfile            # Imagen Docker
-├── docker-compose.yml    # Orquestación
-│
-├── core/                 # Lógica de negocio
-│   ├── __init__.py      # Exports del módulo
-│   ├── optimizer.py     # Motor CP-SAT OR-Tools ⭐
-│   ├── data_loader.py   # Importadores y generadores
-│   ├── validator.py     # Validador de restricciones
-│   └── exporter.py      # Exportadores Excel/CSV
-│
-├── pages/               # Interfaces Streamlit
-│   ├── 1_🎓_Profesional.py   # Módulo generación oficial ⭐
-│   ├── 2_👨‍🎓_Estudiantil.py  # Módulo personal (futuro)
-│   └── 3_⚙️_Configuracion.py # Administración (futuro)
-│
-├── docs/                # Documentación
-├── data/                # Archivos subidos
-├── templates/           # Plantillas Excel
-└── test/                # Tests unitarios
-```
-
-## 🧪 Prueba Rápida
-
-1. Login como **Profesional** (admin123)
-2. Ir al módulo **1_🎓_Profesional** en el menú lateral
-3. Tab "Cargar Datos":
-   - Clic "Usar datos de ejemplo"
-   - Clic "Generar aulas"
-   - Clic "Generar docentes"
-4. Tab "Optimizar":
-   - Clic "Ejecutar Optimización"
-   - Esperar 10-30 segundos
-5. Tab "Exportar":
-   - Clic "Descargar Excel"
-
-## 🐳 Docker
+## Docker
 
 ```bash
 # Construir y ejecutar
 docker-compose up -d
 
-# Acceder
-http://localhost:8501
+# Acceder en http://localhost:8501
 ```
 
-## 📖 Documentación Técnica
+## Despliegue en AWS
 
-Ver [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md) para documentación detallada sobre:
+### Opcion 1: ECS (Fargate)
 
-- Arquitectura del sistema
-- Algoritmo de optimización CP-SAT
-- Restricciones y objetivos
-- Flujo de datos
+1. Crear repositorio en ECR
+2. Crear cluster en ECS
+3. Configurar secretos en GitHub:
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+4. Push a `main` para desplegar automaticamente
 
-## ✅ Características Implementadas
+### Opcion 2: EC2
 
-- ✅ Autenticación por roles
-- ✅ Motor CP-SAT con restricciones duras y blandas
-- ✅ Ventana horaria UCE: L-V 07:00-20:00, Sáb 07:00-13:00
-- ✅ Asignación automática de aulas según capacidad
-- ✅ Asignación automática de docentes según elegibilidad
-- ✅ Distinción Lab/Aula para materias prácticas
-- ✅ Validación de conflictos
-- ✅ Exportación Excel/CSV
-- ✅ Dockerización completa
+1. Crear instancia EC2 con Docker instalado
+2. Configurar secretos en GitHub:
+   - `EC2_HOST`
+   - `EC2_USER`
+   - `EC2_SSH_KEY`
+3. Modificar workflow para usar `deploy-ec2`
 
-## ⚠️ Limitaciones Actuales
+## Configuracion CloudFlare
 
-- Módulo Estudiantil: Solo placeholder
-- Persistencia: Todo en memoria (session_state)
-- Monousuario: Un usuario a la vez
+1. Agregar dominio en CloudFlare
+2. Crear registro A apuntando a IP de AWS
+3. Habilitar SSL/TLS (Full)
+4. Opcionalmente habilitar proxy para CDN
 
-## 📝 Licencia
+## Credenciales por Defecto
 
-Proyecto académico - Universidad Central del Ecuador
+| Usuario     | Contraseña | Rol        |
+| ----------- | ---------- | ---------- |
+| admin       | admin123   | Admin      |
+| profesor1   | prof123    | Profesor   |
+| estudiante1 | est123     | Estudiante |
+
+**Importante**: Cambiar credenciales antes de produccion.
+
+## Estructura
+
+```
+horarios-uce/
+├── app.py              # Aplicacion principal
+├── pages/              # Modulos de paginas
+│   ├── profesional.py  # Generacion (Admin)
+│   ├── usuarios.py     # Gestion usuarios (Admin)
+│   ├── dashboard.py    # Estadisticas
+│   ├── disponibilidad.py  # Disponibilidad (Profesor)
+│   ├── mi_horario.py   # Horario (Estudiante)
+│   └── configuracion.py
+├── core/               # Logica de negocio
+│   ├── optimizer.py    # Motor de optimizacion
+│   ├── data_loader.py  # Carga de datos
+│   └── ...
+├── data/               # Datos persistentes (JSON)
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt
+```
+
+## Licencia
+
+MIT License

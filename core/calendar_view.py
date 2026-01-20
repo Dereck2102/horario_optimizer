@@ -1,5 +1,5 @@
 """
-Módulo para visualización de horarios en formato calendario.
+Modulo para visualizacion de horarios en formato calendario.
 """
 
 import pandas as pd
@@ -18,7 +18,7 @@ COLORS = [
 def create_calendar_view(horario: pd.DataFrame, filter_by: Optional[str] = None, 
                          filter_value: Optional[str] = None) -> go.Figure:
     """
-    Crea una visualización tipo calendario del horario.
+    Crea una visualizacion tipo calendario del horario.
     
     Args:
         horario: DataFrame con el horario generado
@@ -28,10 +28,24 @@ def create_calendar_view(horario: pd.DataFrame, filter_by: Optional[str] = None,
     Returns:
         Figura de Plotly con el calendario
     """
+    # Validar columnas requeridas
+    required_cols = ['dia', 'hora_inicio', 'hora_fin', 'materia']
+    missing = [c for c in required_cols if c not in horario.columns]
+    
+    if missing:
+        fig = go.Figure()
+        fig.add_annotation(
+            text=f"Faltan columnas: {', '.join(missing)}", 
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False, font_size=16
+        )
+        fig.update_layout(height=400)
+        return fig
+    
     df = horario.copy()
     
     # Aplicar filtro si existe
-    if filter_by and filter_value:
+    if filter_by and filter_value and filter_by in df.columns:
         df = df[df[filter_by] == filter_value]
     
     if df.empty:
@@ -39,12 +53,13 @@ def create_calendar_view(horario: pd.DataFrame, filter_by: Optional[str] = None,
         fig.add_annotation(text="No hay clases para mostrar", 
                           xref="paper", yref="paper",
                           x=0.5, y=0.5, showarrow=False, font_size=20)
+        fig.update_layout(height=400)
         return fig
     
-    # Mapeo de días a números
+    # Mapeo de dias a numeros (sin tildes para compatibilidad)
     dias_map = {
-        'Lunes': 0, 'Martes': 1, 'Miércoles': 2, 
-        'Jueves': 3, 'Viernes': 4, 'Sábado': 5
+        'Lunes': 0, 'Martes': 1, 'Miercoles': 2, 'Miércoles': 2,
+        'Jueves': 3, 'Viernes': 4, 'Sabado': 5, 'Sábado': 5
     }
     
     # Crear mapeo de colores por materia
@@ -57,7 +72,7 @@ def create_calendar_view(horario: pd.DataFrame, filter_by: Optional[str] = None,
     for _, row in df.iterrows():
         dia_num = dias_map.get(row['dia'], 0)
         
-        # Extraer hora de inicio y fin
+        # Extraer hora de inicio y fin con manejo de errores
         if isinstance(row['hora_inicio'], str):
             hora_ini = int(row['hora_inicio'].split(':')[0])
         else:
