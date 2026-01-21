@@ -1,32 +1,22 @@
 FROM python:3.11-slim
 
-WORKDIR /app
-
-# Instalar dependencias del sistema
+# Instalar Java (para tabula-py si se necesita)
 RUN apt-get update && apt-get install -y \
     default-jre \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar requirements e instalar
+WORKDIR /app
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar aplicacion
 COPY . .
 
-# Crear directorio de datos
+# Crear directorio para persistencia local
 RUN mkdir -p /app/data
 
-# Exponer puerto
-EXPOSE 8501
+# Exponer Puerto 80 (Estándar HTTP para Cloudflare)
+EXPOSE 80
 
-# Variables de entorno
-ENV STREAMLIT_SERVER_PORT=8501
-ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
-ENV STREAMLIT_SERVER_HEADLESS=true
-
-# Healthcheck
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
-
-# Comando de inicio
-CMD ["streamlit", "run", "app.py"]
+# Comando de inicio en Puerto 80
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=80", "--server.address=0.0.0.0"]

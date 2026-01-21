@@ -2,8 +2,10 @@
 # ARCHIVOS Y CARPETAS A IGNORAR EN GIT
 # ============================================
 
-# Documentación (no esencial para el proyecto)
-docs/
+# Documentación (Ignorar binarios grandes, permitir markdown)
+docs/*.pdf
+docs/*.rar
+docs/*.zip
 
 # Python Cache y Bytecode
 __pycache__/
@@ -128,3 +130,11 @@ dmypy.json
 # Archivos generados por el sistema
 horario*.xlsx
 horario*.csv
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Secrets
+.env
